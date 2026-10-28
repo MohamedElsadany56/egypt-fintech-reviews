@@ -9,6 +9,9 @@ venv/
 data/raw/*.csv
 !data/raw/.gitkeep
 
+# Cleaned data: ~40 MB, re-create with `python src/cleaning.py`
+data/processed/reviews_clean.csv
+
 # Model caches
 .cache/
 huggingface/

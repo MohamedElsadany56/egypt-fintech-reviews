@@ -1,0 +1,6 @@
+step,rows_before,removed,rows_after
+raw data,71762,0,71762
+remove empty reviews,71762,1,71761
+remove duplicate reviewId,71761,0,71761
+remove spam (keyboard mash),71761,12,71749
+clean data,71749,0,71749

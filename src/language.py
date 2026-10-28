@@ -11,7 +11,8 @@ Rules (simple and explainable on purpose):
        franco  = 2 points per word with an Arabic-sound digit inside (3ala, 7aga, ba2a, 5alas)
                + 1 point per common franco word (msh, keda, ezay ...)
        english = 1 point per common English word (the, is, not, app ...)
-     franco if franco score >= 2 and higher than the english score, otherwise english.
+     franco if the franco score is higher than the english score and either >= 2,
+     or the review has no English words at all ("Gamed", "Tamam"). Otherwise english.
   3. No letters at all (emoji, numbers) -> unknown.
 
 Usage (from the repo root) to label CSVs you already collected:
@@ -21,13 +22,15 @@ Usage (from the repo root) to label CSVs you already collected:
 import re
 import sys
 
-ARABIC_LETTER = re.compile(r"[ء-ي٠-٩پچڤگ]")
+ARABIC_LETTER = re.compile(r"[\u0621-\u064A\u0660-\u0669\u067E\u0686\u06A4\u06AF]")
 LATIN_LETTER = re.compile(r"[A-Za-z]")
-WORD = re.compile(r"[A-Za-z0-9']+")
+WORD = re.compile(r"[A-Za-z0-9]+(?:'[A-Za-z0-9]+)*")
 
 # A word with 2/3/5/7/8/9 used as a letter: 3ala, 7aga, ba2a, 5alas, mesh3arf.
-# Needs letters around the digit, so phone models (S24, A52) and "4G"/"5G" are not counted.
-FRANCO_DIGIT_WORD = re.compile(r"^(?=.*[a-z])(?:[a-z]+[235789][a-z]*|[235789][a-z]{2,}[a-z0-9]*)$")
+# Needs a letter after the digit, so phone models (S24, A52, s8) and "4G"/"5G" are not counted.
+FRANCO_DIGIT_WORD = re.compile(r"^(?:[a-z]+[235789][a-z]+[a-z0-9]*|[235789][a-z]{2,}[a-z0-9]*)$")
+# Latin words with digits that are NOT franco: "gr8", money and units like "5egp", "2gb", "3pm".
+NOT_FRANCO = re.compile(r"^(?:gr8|w8|l8r|m8|\d+(?:egp|le|gb|mb|kb|kg|min|mins|th|st|nd|rd|pm|am|hrs?|k|m))$")
 
 # Common franco words. Words that are also English or brand names ("ana" in "Ana Vodafone",
 # "el", "w", "ya", "fe") are left out because they cause false positives.
@@ -40,7 +43,7 @@ FRANCO_WORDS = {
     "elly", "elli", "illi", "ya3ni", "yani", "fa2", "felos", "flos", "floos", "mabye",
     "mabyeshtaghal", "byfta7", "bt3ml", "wala", "walla", "law", "lama", "3ashan", "3shan",
     "alashan", "3lshan", "ma3", "m3", "betaa", "kol", "kolo", "haga", "7elw", "helw",
-    "wahsh", "we7esh", "zeft", "5ara", "khara", "harame", "7arame", "sabab", "el2", "da",
+    "wahsh", "we7esh", "zeft", "gamed", "gamd", "gedan", "gdn", "kwyes", "7lw", "ahla", "a7la", "awsa5", "5ara", "khara", "harame", "7arame", "sabab", "el2", "da",
     "dah", "di", "deh", "dool", "eltatbeek", "eltatbe2", "tatbe2", "tatbeek", "elbarnameg",
 }
 
@@ -63,10 +66,12 @@ def detect_language(text):
     if n_ar >= n_lat:
         return "arabic"
 
-    words = [w.lower() for w in WORD.findall(text)]
-    franco = sum(2 for w in words if FRANCO_DIGIT_WORD.match(w)) + sum(1 for w in words if w in FRANCO_WORDS)
+    words = [w.lower().replace("'", "") for w in WORD.findall(text)]
+    franco = (sum(2 for w in words if FRANCO_DIGIT_WORD.match(w) and not NOT_FRANCO.match(w))
+              + sum(1 for w in words if w in FRANCO_WORDS))
     english = sum(1 for w in words if w in ENGLISH_WORDS)
-    if franco >= 2 and franco > english:
+    # One franco word is enough when there are no English words at all ("Gamed", "Tamam").
+    if franco > english and (franco >= 2 or english == 0):
         return "franco"
     return "english"
 
