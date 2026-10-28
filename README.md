@@ -3,12 +3,12 @@
 
 An analysis of real Google Play reviews of five Egyptian fintech apps: **InstaPay, Vodafone Cash, Telda, valU and Fawry**. The project finds what frustrates users most, when ratings dropped and why, and which app gives the best experience, across Arabic, English and Franco-Arabic reviews.
 
-> Status: in progress. Data collected and cleaned (71,749 reviews); ratings over time and complaint topics done; sentiment next.
+> Status: in progress. Data collected and cleaned (71,749 reviews); ratings over time, complaint topics and sentiment done; app scorecard and dashboard next.
 
 ---
 
 ## Key findings
-*(In progress. Each app is measured over its full-coverage period; see `notebooks/02_ratings_over_time.ipynb` and `03_complaint_topics.ipynb`.)*
+*(In progress. Each app is measured over its full-coverage period; see notebooks 02–04.)*
 
 1. **Updates cause the worst weeks.** Three of six complaint surges came right after an update that stopped the app from opening: InstaPay 1.12.0, Fawry 6.9.0 and valU 8.0.x.
 2. **InstaPay 1.12.0 (Feb 2026) is the biggest event in the data:** about 1,200 one-star reviews in two weeks, ~26x the usual level. That version averages 3.29★, down from 4.24★ for 1.11.0.
@@ -18,6 +18,8 @@ An analysis of real Google Play reviews of five Egyptian fintech apps: **InstaPa
 6. **Top complaint: the app not working** appears in 28% of 1-star reviews across all apps, and in 51% of InstaPay's and 47% of Vodafone Cash's negative reviews. Customer service is a close second (25% of 1-star reviews) and the top problem for Fawry (34%) and valU (22%).
 7. **Failed transactions are smaller than expected:** about 5% of 1-star reviews overall, 10% for Fawry.
 8. **Each app has its own problem:** Telda = the card (25%) and the waiting list; valU = rejected applications and low limits (12%) plus fees and interest (7%); InstaPay = sign-up and SMS verification (18%) and not working from abroad.
+9. **Hidden pain points:** 6.6% of 4–5★ written reviews have clearly negative text (8.6% for InstaPay), mostly about the app not working. Star-based dashboards count these users as happy.
+10. **English-writing users are more negative** for InstaPay (+13 points of 1–2★ reviews) and valU (+7); for Fawry and Telda, Arabic reviews are slightly more negative.
 
 ![Complaint topics by app](images/complaint_topics_heatmap.png)
 
@@ -117,6 +119,7 @@ python src/cleaning.py
 - **Uneven Arabic coverage:** the store returns the newest reviews up to a limit, and Arabic reviews hit it sooner. Arabic reviews start in Mar 2025 for InstaPay, Jul 2023 for Fawry and May 2026 for Vodafone Cash. Trends over time use only the period where both languages are collected (`in_full_coverage`).
 
 ![Reviews per month by store language](images/coverage_by_language.png)
+- The Arabic sentiment model agrees with the stars for 72% of clearly positive/negative reviews (English: 84%); most disagreements are factual complaints it labels neutral, so languages are compared using stars, not the model.
 - Keyword topic labels can miss sarcasm and mixed-language slang; about 30% of negative reviews get no topic, mostly general complaints ("worst app") with nothing specific.
 - No ready-made sentiment model exists for Franco-Arabic, so star ratings are used as its sentiment label.
 
