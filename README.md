@@ -3,17 +3,21 @@
 
 An analysis of real Google Play reviews of five Egyptian fintech apps: **InstaPay, Vodafone Cash, Telda, valU and Fawry**. The project finds what frustrates users most, when ratings dropped and why, and which app gives the best experience, across Arabic, English and Franco-Arabic reviews.
 
-> Status: in progress. Data collected and cleaned (71,749 reviews); analysis is next.
+> Status: in progress. Data collected and cleaned (71,749 reviews); ratings-over-time analysis done; complaint topics next.
 
 ---
 
 ## Key findings
-*(Filled in once the analysis is done. Each finding: one sentence, one number, one chart.)*
+*(In progress: findings from the ratings analysis so far. Each app is measured over its full-coverage period; see `notebooks/02_ratings_over_time.ipynb`.)*
 
-1. **Top complaint:** _[topic]_ drives _[X]%_ of 1-star reviews across all apps.
-2. **Biggest rating drop:** _[app]_ in _[month/year]_, linked to _[update/outage/fee change]_.
-3. **Best experience:** _[app]_ with _[X]_ average rating and the lowest share of negative reviews.
-4. **Hidden pain points:** _[X]%_ of 4–5 star reviews still mention a problem.
+1. **Updates cause the worst weeks.** Three of six complaint surges came right after an update that stopped the app from opening: InstaPay 1.12.0, Fawry 6.9.0 and valU 8.0.x.
+2. **InstaPay 1.12.0 (Feb 2026) is the biggest event in the data:** about 1,200 one-star reviews in two weeks, ~26x the usual level. That version averages 3.29★, down from 4.24★ for 1.11.0.
+3. **Not every surge is technical.** Fawry's Dec 2024 surge is about cash stuck in ATM withdrawals with the Fawry card and no customer-service answer; valU's Feb 2022 surge is a reaction to a promotion and hidden fees.
+4. **Rating prompts inflate averages.** Fawry's Sep–Oct 2023 wave added ~2,500 five-star reviews in five weeks, 72% of them one or two words.
+5. **Reply speed varies widely.** Fawry answers 99% of negative reviews (median 5 hours); valU answers 88% but after a median of 46 days; Telda answers 19%.
+6. **Top complaint:** _[topic]_ drives _[X]%_ of 1-star reviews across all apps. *(next: topic analysis)*
+
+![Weekly 1-star reviews with complaint surges labeled](images/complaint_surges.png)
 
 ## Recommendations
 *(2–3 per app, each tied to a number from the analysis.)*
@@ -58,7 +62,7 @@ An analysis of real Google Play reviews of five Egyptian fintech apps: **InstaPa
 1. **Collection:** `src/collect_reviews.py` (newest reviews first, Arabic and English, Egypt store). Each review's real language is labeled by `src/language.py` with explainable rules (Arabic vs Latin letter count, Franco digit-letters like 3/7/2, and common Franco vs English words).
    Vodafone Cash has no separate app, so its reviews come from Ana Vodafone, filtered to those mentioning the wallet.
 2. **Cleaning** (`src/cleaning.py`, `notebooks/01_cleaning.ipynb`): remove empty reviews, duplicate review IDs and keyboard-mash spam; re-detect language; normalize Arabic text; add date, coverage, star, reply and text-length columns. Repeated text is *not* treated as duplication ("ممتاز" alone is written 5,219 times by different people).
-3. **Ratings over time:** monthly ratings, 1-star spike detection, ratings by app version.
+3. **Ratings over time** (`src/ratings.py`, `notebooks/02_ratings_over_time.ipynb`): monthly ratings for all reviews and for reviews with 3+ words; complaint surges = weeks with ≥40 one-star reviews and ≥3x the app's usual level (median of the previous 8 weeks), explained by reading the reviews and the app version; rating-prompt waves; ratings by app version; reply rate and speed.
 4. **Complaint topics:** keyword dictionary in three languages, validated against 300 hand-labeled reviews (precision and recall per topic).
 5. **Sentiment:** CAMeLBERT dialect model for Arabic, RoBERTa for English; mismatches between text and stars.
 6. **Comparison:** app scorecard and dashboard.
@@ -71,7 +75,8 @@ egypt-fintech-reviews/
 ├── src/
 │   ├── collect_reviews.py  # scraper
 │   ├── language.py         # arabic / english / franco detection
-│   └── cleaning.py         # cleaning pipeline
+│   ├── cleaning.py         # cleaning pipeline
+│   └── ratings.py          # monthly stats, surge detection, version stats
 ├── data/
 │   ├── raw/                # scraped CSVs (not committed, re-create with the script)
 │   └── processed/          # cleaning log, removed rows, language check sample
