@@ -68,7 +68,7 @@ An analysis of real Google Play reviews of five Egyptian fintech apps: **InstaPa
 2. **Cleaning** (`src/cleaning.py`, `notebooks/01_cleaning.ipynb`): remove empty reviews, duplicate review IDs and keyboard-mash spam; re-detect language; normalize Arabic text; add date, coverage, star, reply and text-length columns. Repeated text is *not* treated as duplication ("ممتاز" alone is written 5,219 times by different people).
 3. **Ratings over time** (`src/ratings.py`, `notebooks/02_ratings_over_time.ipynb`): monthly ratings for all reviews and for reviews with 3+ words; complaint surges = weeks with ≥40 one-star reviews and ≥3x the app's usual level (median of the previous 8 weeks), explained by reading the reviews and the app version; rating-prompt waves; ratings by app version; reply rate and speed.
 4. **Complaint topics** (`src/topics.py`, `notebooks/03_complaint_topics.ipynb`): 12 topics defined by Arabic, English and Franco keyword rules, built from the most frequent words in negative reviews. A review can have several topics. Rules were checked by reading random samples per topic and fixing false matches (for example "ربا" inside "الكهربا"); an independent 100-review check file is included (`data/processed/topic_check_sample.csv`).
-5. **Sentiment:** CAMeLBERT dialect model for Arabic, RoBERTa for English; mismatches between text and stars.
+5. **Sentiment** (`notebooks/04_sentiment.ipynb`, run on Google Colab with a GPU): CAMeLBERT dialect model for Arabic, Twitter-RoBERTa for English, star rating for Franco; agreement with stars, sentiment by language, and hidden pain points (4–5★ reviews with negative text).
 6. **Comparison:** app scorecard and dashboard.
 
 ## Repo structure
