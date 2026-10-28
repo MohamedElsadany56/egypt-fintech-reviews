@@ -1,0 +1,14 @@
+{
+  "_note": "app_id = the part after id= in the app's Play Store URL. Optional per app: max (reviews per language) and filter_keywords (keep only reviews mentioning one of them, case-insensitive).",
+  "apps": [
+    {"name": "InstaPay",      "search": "InstaPay Egypt",  "app_id": "com.egyptianbanks.instapay"},
+    {"name": "Vodafone Cash", "search": "Ana Vodafone",    "app_id": "com.emeint.android.myservices",
+     "_comment": "Ana Vodafone covers plans, data and bills too, so only wallet-related reviews are kept. Higher max because most reviews get filtered out.",
+     "max": 60000,
+     "filter_keywords": ["كاش", "محفظ", "تحويل فلوس", "حولت فلوس", "انستا باي", "انستاباي",
+                         "cash", "wallet", "money transfer", "instapay", "kash", "ka4"]},
+    {"name": "Telda",         "search": "Telda",           "app_id": "io.telda.app"},
+    {"name": "valU",          "search": "valU",            "app_id": "com.efgh.customer"},
+    {"name": "Fawry",         "search": "myfawry",         "app_id": "com.fawry.myfawry"}
+  ]
+}
