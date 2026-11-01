@@ -1,0 +1,7 @@
+﻿app,start_date,end_date,one_star_reviews,times_usual,app_version,cause
+InstaPay,2026-02-23,2026-03-08,1200,25.7,1.12.0,App stopped opening after the 1.12.0 update
+valU,2022-02-28,2022-03-13,495,28.3,6.0.3,"Backlash at a promotion: 'fake offers', hidden fees"
+Fawry,2024-12-16,2024-12-22,234,7.8,5.0.46,"Fawry card: cash stuck at ATMs, customer service not answering"
+Fawry,2026-06-29,2026-07-05,150,4.2,6.9.0,App crashing or not opening after the 6.9.0 update
+valU,2024-03-11,2024-03-17,48,5.1,8.0.3,8.0.x update broke the app; logins blocked with developer options on
+Telda,2022-10-17,2022-10-23,42,4.2,2.3.0,Sign-up failing with a false 'check your internet' error

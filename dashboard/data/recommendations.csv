@@ -1,0 +1,15 @@
+﻿app,priority,recommendation,evidence
+InstaPay,1,Release safety: roll updates out to a small share of users first and stop the rollout when crash reports jump.,"Version 1.12.0 (Feb 2026) brought ~1,200 one-star reviews in two weeks (~26x usual); 'app won't open' is in 51% of negative reviews."
+InstaPay,2,"Make sign-up work without SMS problems: an in-app OTP option, clearer errors, and support for users abroad.",Sign-up / SMS verification is in 18% of negative reviews; 'not working from abroad' in 3%.
+InstaPay,3,"When the security check blocks a phone, say which app or setting caused it.","Security-block and unsupported-phone complaints ('this app is hooked') are in 3% of negative reviews, and users say they can't tell what to remove."
+Fawry,1,Stabilize the app before new features: test updates on more phone models and stage rollouts.,'App won't open / crashes' rose from 26% to 39% of negative reviews in the last six months; version 6.9.0 had 65% one-star reviews.
+Fawry,2,"Show the status of every failed payment or ATM withdrawal in the app, with an automatic refund date.","Failed or stuck transactions are in 10% of Fawry's negative reviews (bill payments, recharges, Fawry card at ATMs), the highest of all five apps."
+Fawry,3,Keep investing in customer service: it is improving but still the top complaint.,"Customer service is in 34% of negative reviews overall, down from 29% to 17% in the last six months compared with the six before."
+Telda,1,"Fix the card journey: delivery or pickup outside Cairo, delivery tracking, and clear card fees.","The card is the top complaint (25% of negative reviews): waiting time, branches, and the 99 EGP card fee."
+Telda,2,Answer negative reviews and support chats faster.,"Telda replies to only 19% of negative reviews, and customer-service complaints rose from 21% to 26% in the last six months."
+Telda,3,Investigate why ratings are slipping before it becomes a trend.,Average rating fell from 4.09 to 3.72 and the 1-star share rose from 17% to 26% (last six months vs the six before).
+valU,1,"Tell applicants the reason for a rejection, and pre-check eligibility in the app before they travel to a branch.","Rejected applications or low limits are in 12% of negative reviews, often 'rejected after hours at a branch with no reason'."
+valU,2,Set a reply target for complaints.,"valU replies to 88% of negative reviews, but the median reply takes 46 days."
+valU,3,Stop the decline: fix app stability and make fees and interest clear before purchase.,"Average rating fell from 2.80 to 2.09 in the last six months; 'app won't open' rose from 10% to 23% of negative reviews; fees and interest 7%, fraud accusations 9%."
+Vodafone Cash,1,"Make the wallet page inside Ana Vodafone fast and reliable (loading, lag and crashes).",'App won't open / crashes / slow' is in 47% of negative wallet reviews; 22% of 4-5★ wallet reviews still describe a problem.
+Vodafone Cash,2,Review the wallet sign-up and verification steps.,"Sign-up, login or verification problems are in 14% of negative wallet reviews. (Only six months and ~700 reviews of full coverage.)"

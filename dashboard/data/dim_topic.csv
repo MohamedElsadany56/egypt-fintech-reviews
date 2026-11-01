@@ -1,0 +1,13 @@
+﻿topic_id,topic,sort_order
+app_not_working,"App won't open, crashes or is slow",1
+customer_service,Customer service unreachable or unhelpful,2
+login_verification,"Sign-up, login, verification or waiting list",3
+card,"Card delivery, branches or ATM use",4
+fraud_accusation,Accuses the company of fraud or theft,5
+fees_interest,"Fees, charges or interest",6
+failed_transaction,"Money deducted, transfer failed or stuck",7
+rejected_limits,Application rejected or limit too low,8
+security_device,"Security block, unsupported phone or permissions",9
+abroad,Can't use it from abroad,10
+missing_feature,"Missing feature, bank or service",11
+design_interface,Confusing design or interface,12
