@@ -1,0 +1,149 @@
+// =====================================================================
+// Sawt El Omala · Power BI measures
+// Create a blank table called _Measures (Home → Enter data → name it "_Measures", OK),
+// then add each measure below with Modeling → New measure, on the _Measures table.
+// Table names match the CSV files in dashboard/data/ (fact_reviews, review_topics, ...).
+// =====================================================================
+
+
+// ---------- Date table (Modeling → New table) ----------
+// After creating it: Table tools → Mark as date table → Date column = Date.
+Date =
+ADDCOLUMNS (
+    CALENDAR ( DATE ( 2018, 1, 1 ), DATE ( 2026, 12, 31 ) ),
+    "Year", YEAR ( [Date] ),
+    "Month Start", DATE ( YEAR ( [Date] ), MONTH ( [Date] ), 1 ),
+    "Month", FORMAT ( [Date], "MMM yyyy" ),
+    "Week Start", [Date] - WEEKDAY ( [Date], 2 ) + 1
+)
+
+
+// ---------- Calculated column (select fact_reviews → Table tools → New column) ----------
+// Readable labels for the hidden-pain slicer on the "Voice of the customer" page.
+Review Type =
+IF (
+    fact_reviews[hidden_pain_point] = 1,
+    "Hidden pain point (4-5★, negative text)",
+    "Other reviews"
+)
+
+
+// ---------- Volume and stars ----------
+Reviews =
+COUNTROWS ( fact_reviews )
+
+Avg Stars =
+AVERAGE ( fact_reviews[stars] )
+
+One-Star Reviews =
+SUM ( fact_reviews[is_one_star] )
+
+% 1-Star =
+DIVIDE ( [One-Star Reviews], [Reviews] )
+
+Negative Reviews =
+SUM ( fact_reviews[is_negative] )
+
+% Negative (1-2 Stars) =
+DIVIDE ( [Negative Reviews], [Reviews] )
+
+// Share of reviews per star level inside each app (for the 100% star-distribution bar)
+% of App Reviews =
+DIVIDE ( [Reviews], CALCULATE ( [Reviews], REMOVEFILTERS ( fact_reviews[stars] ) ) )
+
+// Average without one- and two-word reviews ("ممتاز", "Good"), which come in rating-prompt waves
+Avg Stars (3+ Words) =
+CALCULATE ( [Avg Stars], fact_reviews[text_usable] = 1 )
+
+
+// ---------- Store rating ----------
+Store Rating =
+SELECTEDVALUE ( dim_app[store_rating] )
+
+Gap vs Store Rating =
+IF ( NOT ISBLANK ( [Store Rating] ), [Avg Stars] - [Store Rating] )
+
+
+// ---------- Trend: last 6 months vs the 6 months before ----------
+Last Review Date =
+CALCULATE ( MAX ( fact_reviews[review_date] ), REMOVEFILTERS () )
+
+Avg Stars Last 6M =
+VAR LastDate = [Last Review Date]
+RETURN
+    CALCULATE (
+        [Avg Stars],
+        REMOVEFILTERS ( 'Date' ),
+        fact_reviews[review_date] > LastDate - 182
+    )
+
+Avg Stars Prev 6M =
+VAR LastDate = [Last Review Date]
+VAR Result =
+    CALCULATE (
+        [Avg Stars],
+        REMOVEFILTERS ( 'Date' ),
+        fact_reviews[review_date] <= LastDate - 182,
+        fact_reviews[review_date] > LastDate - 364
+    )
+VAR N =
+    CALCULATE (
+        [Reviews],
+        REMOVEFILTERS ( 'Date' ),
+        fact_reviews[review_date] <= LastDate - 182,
+        fact_reviews[review_date] > LastDate - 364
+    )
+RETURN
+    IF ( N >= 100, Result )        // too few reviews -> no trend (Vodafone Cash)
+
+Trend (Last 6M vs Prev 6M) =
+IF ( NOT ISBLANK ( [Avg Stars Prev 6M] ), [Avg Stars Last 6M] - [Avg Stars Prev 6M] )
+
+
+// ---------- Complaint topics ----------
+// Negative (1-2★) reviews with 3+ words = the base for every topic share
+Negative Written Reviews =
+CALCULATE ( [Reviews], fact_reviews[is_negative] = 1, fact_reviews[text_usable] = 1 )
+
+Topic Reviews =
+CALCULATE (
+    DISTINCTCOUNT ( review_topics[review_id] ),
+    fact_reviews[is_negative] = 1,
+    fact_reviews[text_usable] = 1
+)
+
+// A review can have several topics, so these shares don't add up to 100%
+% of Negative Reviews (Topic) =
+DIVIDE ( [Topic Reviews], [Negative Written Reviews] )
+
+// For the "Voice of the customer" table: 1 if the review has one of the topics picked in the topic slicer
+// (or if no topic is picked). Use it as a visual filter "is 1" on the review table, because the
+// topic slicer does not filter fact_reviews directly (single-direction relationships, on purpose).
+Matches Topic Slicer =
+IF (
+    ISFILTERED ( dim_topic[topic] ),
+    IF ( COUNTROWS ( review_topics ) > 0, 1, 0 ),
+    1
+)
+
+
+// ---------- Hidden pain points (4-5★ reviews whose text is negative) ----------
+Hidden Pain Reviews =
+SUM ( fact_reviews[hidden_pain_point] )
+
+Hidden Pain % =
+DIVIDE ( [Hidden Pain Reviews], SUM ( fact_reviews[hidden_pain_base] ) )
+
+
+// ---------- Company replies ----------
+Reply Rate (Negative) =
+DIVIDE (
+    CALCULATE ( SUM ( fact_reviews[has_reply] ), fact_reviews[is_negative] = 1 ),
+    [Negative Reviews]
+)
+
+Median Reply Hours =
+CALCULATE ( MEDIAN ( fact_reviews[reply_hours] ), fact_reviews[is_negative] = 1 )
+
+Median Reply Days =
+DIVIDE ( [Median Reply Hours], 24 )
